@@ -41,9 +41,9 @@ router.post('/connect', function(req,res,next){
     connect(connectionString)
     .then(
       (data) => { 
-        res.send(data);
-       }
-    )
+       
+          res.json(data);
+    })
     .catch((err)=>
     {
       res.send(err);
@@ -60,30 +60,32 @@ function connect(connectionString){
   return new Promise((resolve, reject)=>
   {
     console.log('into connect');
-  var connection =  mongoose.connect(connectionString, {useNewUrlParser: true})
-    .then(()=>
-    {
-      
-      new Admin(connection.db).listDatabases(function(err, result) {
-        if(err){
-          return res.json({
-            'error' : 'Cannot List Databases!',
-            'code' : '206'
-          });
-        }
-        console.log('listDatabases succeeded');
-        var allDatabases = result.databases;    
-        allDatabases.forEach(element => {
-          console.log(element);
+   mongoose.connect(connectionString, {useNewUrlParser: true},function(err,connection){
+     if(err){
+       reject(err);
+     }
+     else{
+       console.log('connected');
+       connection.Admin.listDatabases(function(err,result){
+         if(err){
+           reject(err);
+         }
+        var out = [];
+        _.each(result.databases,function(item){
+          var formatted = {
+            name : item.name,
+            details : "/mongo-api/" + item.name,
+            type : "database"
+          }
+          out.push(formatted);
         });
-          resolve(allDatabases);
+       resolve(out);
+     });
+    }
+   });
     });
-    })
-    .catch(err=>{
-        reject(err);
-    });
+    
  
-  });
 }
 
 module.exports = router;
