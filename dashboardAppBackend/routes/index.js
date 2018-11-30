@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var Admin = mongoose.mongo.Admin;
+//var Admin = mongoose.mongo.Admin;
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+// router.get('/', function(req, res, next) {
+//   res.render('index', { title: 'Express' });
+// });
 
 router.post('/connect', function(req,res,next){
 
@@ -32,17 +32,16 @@ router.post('/connect', function(req,res,next){
     var password = req.body.password; 
     var port = req.body.port;
     var serverName = req.body.serverName;
+    var dbName = req.body.dbName;
 
-    connectionString = 'mongodb://'+username+':'+password+'@'+serverName+':'+port;
+    connectionString = 'mongodb://'+username+':'+password+'@'+serverName+':'+port+'/'+dbName;
     console.log(connectionString);
-    
-   connectionString ='mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore';
-  console.log(connectionString);
     connect(connectionString)
     .then(
-      (data) => { 
-       
-          res.json(data);
+      () => {   
+        res.json({
+          'status':'connected'
+        });
     })
     .catch((err)=>
     {
@@ -50,41 +49,34 @@ router.post('/connect', function(req,res,next){
     });
     
     
-   // console.log(connectionString);
-   // res.send(connectionString);
+ 
 
 });
 
 function connect(connectionString){
-  
   return new Promise((resolve, reject)=>
   {
-    console.log('into connect');
-   mongoose.connect(connectionString, {useNewUrlParser: true},function(err,connection){
+   mongoose.connect(connectionString, {useNewUrlParser: true},function(err){
      if(err){
-       reject(err);
+      reject(err);
      }
      else{
-       console.log('connected');
-       connection.Admin.listDatabases(function(err,result){
-         if(err){
-           reject(err);
-         }
-        var out = [];
-        _.each(result.databases,function(item){
-          var formatted = {
-            name : item.name,
-            details : "/mongo-api/" + item.name,
-            type : "database"
-          }
-          out.push(formatted);
-        });
-       resolve(out);
-     });
-    }
-   });
+       resolve();
+     }
     });
-    
+  });
+}
+
+function listCollections(){
+  return new Promise((resolve,reject)=>{
+    mongoose.connection.db.listCollections(function(err, collections){
+      if(err)
+      reject(err);
+      else{
+        resolve(collections);
+      }
+    })
+  });
  
 }
 
