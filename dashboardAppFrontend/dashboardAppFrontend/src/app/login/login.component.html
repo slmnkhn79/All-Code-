@@ -1,0 +1,39 @@
+<div *ngIf="!connected" style="text-align:center">
+  <h1>
+    Welcome!
+  </h1>
+</div>
+<mat-card *ngIf="!connected" class="details_card">
+
+  <mat-card-title >Enter Database Details!</mat-card-title>
+  <mat-card-content class="inline_details">
+     
+        <mat-form-field>
+          <input matInput placeholder="Username" >
+        </mat-form-field>
+        <br>
+       
+        <mat-form-field>
+          <input type="password" matInput placeholder="Password" />
+        </mat-form-field>
+      
+        <br>
+        <mat-form-field>
+          <input matInput placeholder="Server Name" />
+        </mat-form-field>
+     
+        <br>
+        <mat-form-field>
+          <input matInput placeholder="Port Number" />
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <input matInput placeholder="Database Name" />
+        </mat-form-field>
+        <br>
+        <button mat-raised-button color="primary" (click)="onClick()">Connect!</button>
+  
+  </mat-card-content>
+</mat-card>
+
+<app-database-details *ngIf="connected"></app-database-details>

@@ -7,41 +7,44 @@ var mongoose = require('mongoose');
 //   res.render('index', { title: 'Express' });
 // });
 
-router.post('/connect', function(req,res,next){
+router.get('/connect', function(req,res,next){
 
-  if(!req.body) {
-    return res.json(
-      {
-        'error' : 'No data was sent!',
-        'code' : '200'
-      });
-  }
-  if(!req.body.username || !req.body.password || !req.body.port || !req.body.serverName){
-    return res.json({
-      'error' : 'Data Incomplete',
-      'code' : '201'
-    });
-  }
-  if(req.body.username.length < 6 || req.body.password.length < 6){
-    return res.json({
-      'error' : 'Less than 6 characters ',
-      'code' : '202'
-    });
-  }
-    var username = req.body.username;
-    var password = req.body.password; 
-    var port = req.body.port;
-    var serverName = req.body.serverName;
-    var dbName = req.body.dbName;
+  // if(!req.body) {
+  //   return res.json(
+  //     {
+  //       'error' : 'No data was sent!',
+  //       'code' : '200'
+  //     });
+  // }
+  // if(!req.body.username || !req.body.password || !req.body.port || !req.body.serverName){
+  //   return res.json({
+  //     'error' : 'Data Incomplete',
+  //     'code' : '201'
+  //   });
+  // }
+  // if(req.body.username.length < 6 || req.body.password.length < 6){
+  //   return res.json({
+  //     'error' : 'Less than 6 characters ',
+  //     'code' : '202'
+  //   });
+  // }
+  //   var username = req.body.username;
+  //   var password = req.body.password; 
+  //   var port = req.body.port;
+  //   var serverName = req.body.serverName;
+  //   var dbName = req.body.dbName;
 
-    connectionString = 'mongodb://'+username+':'+password+'@'+serverName+':'+port+'/'+dbName;
+  //   connectionString = 'mongodb://'+username+':'+password+'@'+serverName+':'+port+'/'+dbName;
+    connectionString= 'mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore';
     console.log(connectionString);
     connect(connectionString)
     .then(
       () => {   
         res.json({
-          'status':'connected'
+          'status':'connected',
+          'code' : 999
         });
+      
     })
     .catch((err)=>
     {

@@ -5,10 +5,15 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {DemoMaterialModule} from '../material-module';
+import { LoginComponent } from './login/login.component';
+import {HttpClientModule} from '@angular/common/http';
+import { DatabaseDetailsComponent } from './database-details/database-details.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    DatabaseDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -16,7 +21,8 @@ import {DemoMaterialModule} from '../material-module';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    DemoMaterialModule
+    DemoMaterialModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
