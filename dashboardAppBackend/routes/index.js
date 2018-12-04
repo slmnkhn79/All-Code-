@@ -56,6 +56,30 @@ router.get('/connect', function(req,res,next){
 
 });
 
+router.get('/list-collections', function(req,res,next){
+  // console.log('into colletions');
+  // connectionString= 'mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore';
+  //   console.log(connectionString);
+  //   connect(connectionString)
+  //   .then(
+  //     () => {   
+        listCollections()
+        .then((data)=>{
+          console.log(data);
+          res.json(data)
+        })
+        .catch(err=>{
+          res.send(err);
+        });
+      
+    // })
+    // .catch((err)=>
+    // {
+    //   res.send(err);
+    // });
+    
+});
+
 function connect(connectionString){
   return new Promise((resolve, reject)=>
   {
@@ -71,16 +95,18 @@ function connect(connectionString){
 }
 
 function listCollections(){
+  console.log('here00');
   return new Promise((resolve,reject)=>{
-    mongoose.connection.db.listCollections(function(err, collections){
-      if(err)
-      reject(err);
-      else{
-        resolve(collections);
-      }
-    })
-  });
- 
-}
+          mongoose.connection.db.collections(function(error, collections) {
+            if (error) {
+              reject(error);
+             // throw new Error(error);
+            } else {
+              
+              resolve(collections);
+            }
+        });
+     });
+  }
 
 module.exports = router;

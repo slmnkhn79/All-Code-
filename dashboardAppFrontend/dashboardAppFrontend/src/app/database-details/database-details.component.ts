@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {DatabaseService} from '../database.service';
 
 @Component({
   selector: 'app-database-details',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DatabaseDetailsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dbService :DatabaseService) { }
 
   ngOnInit() {
+    this.dbService.getCollectionList();
   }
-
+  onSelect(coll){
+    var dbName = coll.dbName;
+    var name = coll.name;
+    console.log(name);
+  }
 }

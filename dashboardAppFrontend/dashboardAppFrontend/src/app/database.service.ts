@@ -12,12 +12,19 @@ export class DatabaseService {
     status: string,
     code: number
   }
+  private collectionList =[];
+  private collectionUrl = 'http://localhost:3000/api/connect';
   constructor(
     private httpClient: HttpClient
   ) { }
 
   connect() {
     return this.httpClient.get<Status>(this.connectUrl);
+  }
+  getCollectionList(){
+    this.httpClient.get<[]>(this.collectionUrl).subscribe((data)=>{
+    this.collectionList = data;
+    });
   }
  
 }
