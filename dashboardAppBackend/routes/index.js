@@ -54,6 +54,7 @@ router.get('/connect', function(req,res,next){
     });
 });
 
+
 router.get('/list-collections', function(req,res,next){
     // connect('mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore').then(()=>{
       listCollections()
@@ -80,11 +81,23 @@ router.get('/list-collections', function(req,res,next){
       {
         res.json(err);
       });
-    // });
-      
-    
-   
 });
+
+router.get('/getCollectionDetails/:dbName/:collectionName',(req,res,next)=>{
+  var collName = req.params.collection;
+  var dbName = req.params.dbName;
+    getCollectionDetails(dbName,collName)
+    .then((data)=>
+    { 
+      console.log(data);
+      res.send(data);
+    })
+    .catch((err)=>
+    {
+      console.log(err);
+      res.json(err);
+    });
+})
 
 function connect(connectionString){
   return new Promise((resolve, reject)=>
@@ -114,9 +127,16 @@ function listCollections(){
  
 }
 
-function getCollectionDetails(collectionName){
+function getCollectionDetails(dbName , collectionName){
   return new Promise((resolve,reject)=>{
-
+    mongoose.connection.db.collection('books').find({}).toArray()
+    .then((data)=>
+    {
+      resolve(data);
+    })
+    .catch((err)=>{
+      reject(err);
+    });
   });
 }
 
