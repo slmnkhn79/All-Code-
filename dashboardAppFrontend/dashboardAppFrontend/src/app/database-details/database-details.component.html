@@ -1,9 +1,7 @@
 <div class="sider">
-  <ul class="collections-list">
-    <li>One</li>
-    <li>One</li>
-    <li>One</li>
-    <li>One</li>
-    <li>One</li>
+  <ul class="collections-list collection">
+    <li *ngFor="let coll of collectionList">
+      <a onclick="openCollection(coll.name)" >{{coll.name}}</a>
+    </li>
   </ul>
 </div>

@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+var _ = require("underscore")._;
+var connection ;
 //var Admin = mongoose.mongo.Admin;
 /* GET home page. */
 // router.get('/', function(req, res, next) {
@@ -50,16 +52,44 @@ router.get('/connect', function(req,res,next){
     {
       res.send(err);
     });
-    
-    
- 
+});
 
+router.get('/list-collections', function(req,res,next){
+    // connect('mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore').then(()=>{
+      listCollections()
+      .then((collNames)=>
+      {
+       // console.log(collNames);
+        var out = [];
+        _.each(collNames, function(collName){
+          var cleanName = collName.s.name;
+           var name = collName.s.dbName;
+          var formatted = {
+            name : cleanName,
+            details : name +"/" + cleanName,
+            database : name,
+            type : "collection"
+          };
+         // if(cleanName != "system.indexes")
+            out.push(formatted);
+        });
+       // console.log(out);
+        res.json(out);
+      })
+      .catch((err)=>
+      {
+        res.json(err);
+      });
+    // });
+      
+    
+   
 });
 
 function connect(connectionString){
   return new Promise((resolve, reject)=>
   {
-   mongoose.connect(connectionString, {useNewUrlParser: true},function(err){
+   connection = mongoose.connect(connectionString, {useNewUrlParser: true},function(err){
      if(err){
       reject(err);
      }
@@ -72,15 +102,22 @@ function connect(connectionString){
 
 function listCollections(){
   return new Promise((resolve,reject)=>{
-    mongoose.connection.db.listCollections(function(err, collections){
+    mongoose.connection.db.collections(function(err, collections){
       if(err)
       reject(err);
       else{
         resolve(collections);
       }
     })
+
   });
  
+}
+
+function getCollectionDetails(collectionName){
+  return new Promise((resolve,reject)=>{
+
+  });
 }
 
 module.exports = router;
