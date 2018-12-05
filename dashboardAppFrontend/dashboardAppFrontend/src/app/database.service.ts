@@ -9,6 +9,12 @@ export class DatabaseService {
   connected: boolean;
   private connectUrl = 'http://localhost:3000/connect';
   private collectionUrl ='http://localhost:3000/list-collections'
+  private jsonResponse :{
+    status: string,
+    code: number
+  }
+  private collectionList =[];
+  //private collectionUrl = 'http://localhost:3000/api/connect';
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -17,10 +23,9 @@ export class DatabaseService {
     return this.httpClient.get<Status>(this.connectUrl);
   }
   getCollectionList(){
-    return this.httpClient.get<[]>(this.collectionUrl);
-  }
-  openCollection(collectionName){
-    
+    this.httpClient.get<[]>(this.collectionUrl).subscribe((data)=>{
+    this.collectionList = data;
+    });
   }
  
 }

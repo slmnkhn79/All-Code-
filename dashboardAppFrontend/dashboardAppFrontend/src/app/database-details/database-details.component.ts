@@ -7,18 +7,15 @@ import { DatabaseService } from '../database.service';
   styleUrls: ['./database-details.component.css']
 })
 export class DatabaseDetailsComponent implements OnInit {
-  collectionList : [];
+
   constructor(private dbService :DatabaseService) { }
 
   ngOnInit() {
-    this.dbService.getCollectionList().subscribe(
-      (data)=>{
-        this.collectionList = data;
-      }
-    );
+    this.dbService.getCollectionList();
   }
-  openCollection(collectionName){
-    
+  onSelect(coll){
+    var dbName = coll.dbName;
+    var name = coll.name;
+    console.log(name);
   }
-
 }

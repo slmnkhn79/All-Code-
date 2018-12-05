@@ -11,7 +11,12 @@
     padding: 10px;
 }
 
-.collection {
+/* collectionComponent's private CSS styles */
+.selected {
+    background-color: #CFD8DC !important;
+    color: white;
+  }
+  .collection {
     margin: 0 0 2em 0;
     list-style-type: none;
     padding: 0;
