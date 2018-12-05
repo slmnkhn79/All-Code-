@@ -89,7 +89,7 @@ router.get('/getCollectionDetails/:dbName/:collectionName',(req,res,next)=>{
     getCollectionDetails(dbName,collName)
     .then((data)=>
     { 
-      console.log(data);
+      //console.log(data);
       res.send(data);
     })
     .catch((err)=>
@@ -129,14 +129,6 @@ function listCollections(){
 
 function getCollectionDetails(dbName , collectionName){
   return new Promise((resolve,reject)=>{
-    mongoose.connection.db.collection('books').find({}).toArray()
-    .then((data)=>
-    {
-      resolve(data);
-    })
-    .catch((err)=>{
-      reject(err);
-    });
   });
 }
 
