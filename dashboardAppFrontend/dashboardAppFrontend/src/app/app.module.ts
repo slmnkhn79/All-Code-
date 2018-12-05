@@ -8,12 +8,15 @@ import {DemoMaterialModule} from '../material-module';
 import { LoginComponent } from './login/login.component';
 import {HttpClientModule} from '@angular/common/http';
 import { DatabaseDetailsComponent } from './database-details/database-details.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    DatabaseDetailsComponent
+    DatabaseDetailsComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

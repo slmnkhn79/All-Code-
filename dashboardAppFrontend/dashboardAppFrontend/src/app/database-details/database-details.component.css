@@ -59,3 +59,13 @@
     margin-right: .8em;
     border-radius: 4px 0 0 4px;
   }
+
+  .content{
+    position: fixed;
+    margin-left: 22%;
+    width: 80%;
+    background-color: aqua;
+}
+table {
+  width: 100%;
+}

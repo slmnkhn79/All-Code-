@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../database.service';
+import {MatTableDataSource} from  '@angular/material/table'
 
 @Component({
   selector: 'app-database-details',
@@ -7,7 +8,7 @@ import { DatabaseService } from '../database.service';
   styleUrls: ['./database-details.component.css']
 })
 export class DatabaseDetailsComponent implements OnInit {
-
+ dataSource: MatTableDataSource<[]>;
   constructor(private dbService :DatabaseService) { }
 
   ngOnInit() {
@@ -17,5 +18,7 @@ export class DatabaseDetailsComponent implements OnInit {
     var dbName = coll.dbName;
     var name = coll.name;
     console.log(name);
+    this.dbService.getCollectionDetails(name);
+    this.dataSource = new MatTableDataSource(this.dbService.collectionDetails);
   }
 }
