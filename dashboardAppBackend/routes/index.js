@@ -83,19 +83,39 @@ router.get('/list-collections', function(req,res,next){
       });
 });
 
-router.get('/list-collections', function(req,res,next){
+router.get('/list-data/:collectionName/:dbName', function(req,res,next){
+  var dbName = req.params.dbName;
   // console.log('into colletions');
   // connectionString= 'mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore';
   //   console.log(connectionString);
   //   connect(connectionString)
   //   .then(
   //     () => {   
-        listCollections()
+    getCollectionDetails(dbName)
         .then((data)=>{
-          console.log(data);
-          res.json(data)
+          //res.json(data);
+          // var out= [];
+          // _.each(data,function(element){
+          //   console.log(Object.values(element));
+          //   // var formatted = {
+          //   //   name: element.name,
+          //   //   _id : element._id,
+          //   //   isbn :element.isbn,
+          //   //   title: element.title
+
+          //   // }
+          // //  console.log(formatted);
+          //   out.push(formatted);
+          // });
+
+          data.
+
+          
+          console.log(out);
+          res.json(out);
         })
         .catch(err=>{
+          console.log(err);
           res.send(err);
         });
       
@@ -110,7 +130,8 @@ router.get('/list-collections', function(req,res,next){
 function connect(connectionString){
   return new Promise((resolve, reject)=>
   {
-   connection = mongoose.connect(connectionString, {useNewUrlParser: true},function(err){
+    
+   mongoose.connect(connectionString, {useNewUrlParser: true},function(err){
      if(err){
       reject(err);
      }
@@ -136,8 +157,20 @@ function listCollections(){
      });
   }
 
-function getCollectionDetails(dbName , collectionName){
+function getCollectionDetails(collectionName){
   return new Promise((resolve,reject)=>{
+    mongoose.connection.db.collection(collectionName, function(error, coll) {
+      coll.find(function(error, document) {
+            if (error || !document) {
+             reject(error);
+            } else
+             {
+               console.log('------------------');
+              // console.log(document);
+              resolve(document);
+            }
+          });
+    });
   });
 }
 
