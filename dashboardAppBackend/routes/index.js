@@ -94,6 +94,11 @@ router.get('/helper', function(req,res,next){
     })
 });
 
+router.post('/update/:dbName',function(req,res,next)
+{
+      var dbName = req.params.dbName;
+      
+});
 
 router.get('/list-data/:dbName/:limit/:skip', function (req, res, next) {
   var dbName = req.params.dbName;
@@ -127,7 +132,6 @@ router.get('/list-data/:dbName/:limit/:skip', function (req, res, next) {
 function connect(connectionString){
   return new Promise((resolve, reject)=>
   {
-    
    mongoose.connect(connectionString, {useNewUrlParser: true},function(err){
      if(err){
       reject(err);
@@ -179,6 +183,21 @@ function helperData(){
   return new Promise((resolve, reject) => {
     mongoose.connection.db.collection('test', function (error, coll) {
       coll.save(obj,function (error, document) {
+        if (error || !document) {
+          console.log(error);
+          reject(error);
+        } else {
+          resolve(document);
+        }
+      });
+    });
+  });
+}
+
+function updateDocument(collectionName,data) {
+  return new Promise((resolve, reject) => {
+    mongoose.connection.db.collection(collectionName, function (error, coll) {
+      coll.findOneAndUpdate({_id:data._id} , {$set: data},function (error, document) {
         if (error || !document) {
           console.log(error);
           reject(error);

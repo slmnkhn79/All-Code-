@@ -5,6 +5,7 @@ import {MatPaginator,MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig} 
 import { importExpr } from '@angular/compiler/src/output/output_ast';
 
 
+
 @Component({
   selector: 'app-database-details',
   templateUrl: './database-details.component.html',
@@ -75,7 +76,7 @@ export class DatabaseDetailsComponent implements OnInit {
 export class DialogOverview implements OnInit {
     keys :string[];
     modalConfig = MatDialogConfig;
-    
+    displayKeys:string[];
   constructor(
     public dialogRef: MatDialogRef<DialogOverview>,
     @Inject(MAT_DIALOG_DATA) public data:any) {}
@@ -83,10 +84,15 @@ export class DialogOverview implements OnInit {
     ngOnInit(){
       
       this.keys = Object.keys(this.data);
-      console.log(this.keys);
+      this.displayKeys =this.keys.slice(1,this.keys.length); 
+      console.log(this.displayKeys);
     }
   onNoClick(): void {
     this.dialogRef.close();
+  }
+  updateData(udpatedData){
+    console.log(udpatedData);
+    
   }
 
 }
