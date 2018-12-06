@@ -17,7 +17,7 @@ export class DatabaseService {
   }
   private collectionList =[];
    collectionDetails = [];
-  private displayedColumns = [];
+  displayedColumns = [];
   //private collectionUrl = 'http://localhost:3000/api/connect';
   constructor(
     private httpClient: HttpClient
@@ -38,8 +38,8 @@ export class DatabaseService {
     });
     
   }
-  getCollectionDetailsTwo(collName){
-    return this.httpClient.get<[]>(this.baseURL+'/list-data/'+collName);
+  getCollectionDetailsTwo(collName,limit,skip){
+    return this.httpClient.get(this.baseURL+'/list-data/'+collName+'/'+limit+'/'+skip);
     
   }
  

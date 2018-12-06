@@ -1,21 +1,37 @@
 <div class="sider">
   <ul class="collection">
    <li *ngFor = " let coll of dbService.collectionList"  (click)="onSelect(coll)">
-     <span class='badge'></span>{{coll.name}}
+     {{coll.name}}
      </li>
   </ul>
 </div>
-<div class="content">
+<div class="content collection-details" *ngIf="isSelected">
+  <!-- <table>
+    <tr>
+      <th *ngFor="let head of rows">
+        <span>{{head}}</span>
+      </th>
+    </tr>
+    <tr *ngFor="let d of data">
+      <td *ngFor="let h of rows" >  <span >{{d[h]}}</span></td>
+    </tr>
+  </table>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
-          <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-          <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
-        </ng-container>
-      
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
-      </table>
+  <span (click)="getNextDetails()" class="badge">Next...</span> -->
+
+  <table mat-table [dataSource]="data" class="mat-elevation-z8">
+     
+      <ng-container *ngFor = "let test of rows" matColumnDef={{test}} >
+        <th mat-header-cell *matHeaderCellDef>{{test}} </th>
+        <td mat-cell *matCellDef="let element"> {{element[test]}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="rows"  ></tr>
+      <tr mat-row *matRowDef="let row; columns: rows;" (click)="itemSelected(row)"></tr>
+     
+    </table>
+    <mat-paginator  [pageSizeOptions]="[5]"></mat-paginator>
+
   </div>
   
   

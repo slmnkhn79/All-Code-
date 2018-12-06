@@ -9,6 +9,12 @@ import { LoginComponent } from './login/login.component';
 import {HttpClientModule} from '@angular/common/http';
 import { DatabaseDetailsComponent } from './database-details/database-details.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { Ng2TableModule } from 'ng2-table';
+import { PaginationModule } from 'ngx-bootstrap'; 
+import { TabsModule } from 'ngx-bootstrap';
+
+import { MatTableModule} from '@angular/material/table';
+
 
 
 @NgModule({
@@ -25,7 +31,11 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     FormsModule,
     ReactiveFormsModule,
     DemoMaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    Ng2TableModule,
+    PaginationModule,
+    TabsModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

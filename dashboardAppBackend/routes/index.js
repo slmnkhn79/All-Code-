@@ -83,16 +83,30 @@ router.get('/list-collections', function(req,res,next){
       });
 });
 
-router.get('/list-data/:dbName', function (req, res, next) {
+
+router.get('/helper', function(req,res,next){
+    helperData()
+    .then((data)=>{
+      res.status(200).json(data);
+    })
+    .catch((err)=>{
+      res.json(err);
+    })
+});
+
+
+router.get('/list-data/:dbName/:limit/:skip', function (req, res, next) {
   var dbName = req.params.dbName;
+  var limit = req.params.limit;
+  var skip = req.params.skip;
   // console.log('into colletions');
   // connectionString= 'mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore';
   //   console.log(connectionString);
   //   connect(connectionString)
   //   .then(
   //     () => {  
-  var out = [];
-  getCollectionDetails(dbName)
+  
+  getCollectionDetails(dbName,limit,skip)
     .then((data) => {
         console.log(data);
         res.status(200).json(data);
@@ -140,12 +154,33 @@ function listCollections(){
      });
   }
 
-function getCollectionDetails(collectionName) {
+function getCollectionDetails(collectionName,l,s) {
   return new Promise((resolve, reject) => {
     mongoose.connection.db.collection(collectionName, function (error, coll) {
-      coll.find().toArray(function (error, document) {
+      coll.find({}).skip(Number(s)).limit(Number(l)).toArray(function (error, document) {
         if (error || !document) {
-          // console.log(error);
+          console.log(error);
+          reject(error);
+        } else {
+          resolve(document);
+        }
+      });
+    });
+  });
+}
+
+function helperData(){
+  var obj = {
+    "name": "Salman Khan",
+        "Entry1": "One",
+        "Entry2": "Two",
+        "Entry3": "Three"
+  };
+  return new Promise((resolve, reject) => {
+    mongoose.connection.db.collection('test', function (error, coll) {
+      coll.save(obj,function (error, document) {
+        if (error || !document) {
+          console.log(error);
           reject(error);
         } else {
           resolve(document);
