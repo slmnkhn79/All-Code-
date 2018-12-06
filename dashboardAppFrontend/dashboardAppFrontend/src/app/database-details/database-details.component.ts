@@ -1,7 +1,8 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit,ViewChild ,Inject} from '@angular/core';
 import { DatabaseService } from '../database.service';
 import {MatTableDataSource} from  '@angular/material/table'
-import {MatPaginator,MatDialog, MatDialogRef, MAT_DIALOG_DATA} from  '@angular/material'
+import {MatPaginator,MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig} from  '@angular/material'
+import { importExpr } from '@angular/compiler/src/output/output_ast';
 
 
 @Component({
@@ -55,9 +56,9 @@ export class DatabaseDetailsComponent implements OnInit {
   // });
 
   itemSelected(item){
-    console.log(item);
-    const dialogRef = this.dialog.open(DatabaseDetailsComponent, {
-      width: '250px',
+   // console.log(item);
+    const dialogRef = this.dialog.open(DialogOverview, {
+      width: '80%',
       data: item
     });
 
@@ -65,4 +66,27 @@ export class DatabaseDetailsComponent implements OnInit {
       console.log('The dialog was closed');
     });
   }
+}
+@Component({
+  selector: 'dialog-overview',
+  templateUrl: 'dialog-overview.html',
+  styleUrls:['dialog-overview.css']  
+})
+export class DialogOverview implements OnInit {
+    keys :string[];
+    modalConfig = MatDialogConfig;
+    
+  constructor(
+    public dialogRef: MatDialogRef<DialogOverview>,
+    @Inject(MAT_DIALOG_DATA) public data:any) {}
+
+    ngOnInit(){
+      
+      this.keys = Object.keys(this.data);
+      console.log(this.keys);
+    }
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
 }
