@@ -2,7 +2,8 @@ import { Component, OnInit,ViewChild ,Inject} from '@angular/core';
 import { DatabaseService } from '../database.service';
 import {MatTableDataSource} from  '@angular/material/table'
 import {MatPaginator,MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig} from  '@angular/material'
-import { importExpr } from '@angular/compiler/src/output/output_ast';
+
+
 
 
 
@@ -60,11 +61,15 @@ export class DatabaseDetailsComponent implements OnInit {
    // console.log(item);
     const dialogRef = this.dialog.open(DialogOverview, {
       width: '80%',
-      data: item
-    });
+      data: [item,this.name],
+      });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      console.log(result);
+      // this.dbService.updateCollectionData(result).subscribe((da)=>
+      // {
+      //   console.log(da);
+      // });
     });
   }
 }
@@ -77,22 +82,25 @@ export class DialogOverview implements OnInit {
     keys :string[];
     modalConfig = MatDialogConfig;
     displayKeys:string[];
+    oldData = [];
   constructor(
     public dialogRef: MatDialogRef<DialogOverview>,
-    @Inject(MAT_DIALOG_DATA) public data:any) {}
+    @Inject(MAT_DIALOG_DATA) private data:any,private dbService:DatabaseService) {}
 
     ngOnInit(){
-      
-      this.keys = Object.keys(this.data);
+      this.oldData = this.data[0];
+      this.keys = Object.keys(this.data[0]);
       this.displayKeys =this.keys.slice(1,this.keys.length); 
-      console.log(this.displayKeys);
     }
+
+
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(this.oldData);
   }
   updateData(udpatedData){
-    console.log(udpatedData);
-    
+    this.dbService.updateCollectionData(this.data[1],udpatedData).subscribe((data)=>{
+
+    });
   }
 
 }

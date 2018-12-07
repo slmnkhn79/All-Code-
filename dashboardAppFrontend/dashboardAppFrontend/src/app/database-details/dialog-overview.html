@@ -1,10 +1,10 @@
 <h1 mat-dialog-title>Edit Here</h1>
 <div mat-dialog-content>
   <mat-form-field *ngFor="let key of displayKeys">
-    <input matInput [(ngModel)]="data[key]" placeholder={{key}}>
+    <input matInput [(ngModel)]="data[0][key]" placeholder={{key}}>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial (click)="updateData(data)">Ok</button>
+  <button mat-button   cdkFocusInitial (click)="updateData(data[0])">Ok</button>
 </div>

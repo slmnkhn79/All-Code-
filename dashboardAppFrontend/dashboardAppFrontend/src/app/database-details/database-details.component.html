@@ -26,7 +26,7 @@
         <td mat-cell *matCellDef="let element"> {{element[test]}} </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="rows"  ></tr>
+      <tr mat-header-row *matHeaderRowDef="rows"></tr>
       <tr mat-row *matRowDef="let row; columns: rows;" (click)="itemSelected(row)"></tr>
      
     </table>

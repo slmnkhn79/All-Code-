@@ -42,8 +42,8 @@ export class DatabaseService {
     return this.httpClient.get(this.baseURL+'/list-data/'+collName+'/'+limit+'/'+skip);
     
   }
-  updateCollectionData(data){
-    
+  updateCollectionData(collName,data){
+    return this.httpClient.put(this.baseURL+'/'+collName+'/'+'updateData',data);
   }
  
 }

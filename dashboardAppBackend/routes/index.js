@@ -113,7 +113,7 @@ router.get('/list-data/:dbName/:limit/:skip', function (req, res, next) {
   
   getCollectionDetails(dbName,limit,skip)
     .then((data) => {
-        console.log(data);
+       // console.log(data);
         res.status(200).json(data);
     })
     .catch((err) => {
@@ -128,6 +128,22 @@ router.get('/list-data/:dbName/:limit/:skip', function (req, res, next) {
   // });
 
 });
+
+router.put("/:collName/updateData",(req,res,next)=>{
+    var udpatedData = req.body;
+    var collName = req.params.collName;
+    //console.log(data);
+    updateDocument(collName,udpatedData)
+    .then((newData)=>{
+      //console.log(data);
+      res.json(newData);
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.send('Error');
+    });
+});
+
 
 function connect(connectionString){
   return new Promise((resolve, reject)=>
@@ -195,14 +211,24 @@ function helperData(){
 }
 
 function updateDocument(collectionName,data) {
+ // console.log(collectionName);
   return new Promise((resolve, reject) => {
     mongoose.connection.db.collection(collectionName, function (error, coll) {
-      coll.findOneAndUpdate({_id:data._id} , {$set: data},function (error, document) {
+     // updatedData = data.slice(1,data.length);
+    //  uData = [];
+    //  uData =data.toArray();
+    //   uDataNew = uData.slic
+    console.log('---------');
+    var id = mongoose.mongo.ObjectId(data._id);
+    console.log(id);
+    delete data._id;
+    //console.log(data);
+      coll.findOneAndUpdate({_id:id} ,  {$set: data} ,{returnOriginal:true}, function (error, document) {
         if (error || !document) {
           console.log(error);
           reject(error);
         } else {
-          resolve(document);
+          resolve(document.value);
         }
       });
     });
