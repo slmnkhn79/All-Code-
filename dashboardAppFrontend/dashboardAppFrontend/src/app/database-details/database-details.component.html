@@ -6,19 +6,7 @@
   </ul>
 </div>
 <div class="content collection-details" *ngIf="isSelected">
-  <!-- <table>
-    <tr>
-      <th *ngFor="let head of rows">
-        <span>{{head}}</span>
-      </th>
-    </tr>
-    <tr *ngFor="let d of data">
-      <td *ngFor="let h of rows" >  <span >{{d[h]}}</span></td>
-    </tr>
-  </table>
-
-  <span (click)="getNextDetails()" class="badge">Next...</span> -->
-
+<button mat-button ></button>
   <table mat-table [dataSource]="data" class="mat-elevation-z8">
      
       <ng-container *ngFor = "let test of rows" matColumnDef={{test}} >

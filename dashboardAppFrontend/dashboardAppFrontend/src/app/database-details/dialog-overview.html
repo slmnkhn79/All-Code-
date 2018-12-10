@@ -6,5 +6,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button   cdkFocusInitial (click)="updateData(data[0])">Ok</button>
+  <button mat-button   [mat-dialog-close]="data[0]"  cdkFocusInitial (click)="updateData(data[0])">Ok</button>
 </div>
