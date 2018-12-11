@@ -63,9 +63,8 @@
 
   .content{
     position: fixed;
-    margin-left: 22%;
+    margin-left: 20%;
     width: 80%;
-    background-color: aqua;
 }
 table {
   width: 100%;
@@ -112,4 +111,8 @@ th{
   margin-right: .8em;
   border-radius: 4px 0 0 4px;
 }
-
+mat-list
+{
+  height: 550px;
+  overflow: scroll;
+}

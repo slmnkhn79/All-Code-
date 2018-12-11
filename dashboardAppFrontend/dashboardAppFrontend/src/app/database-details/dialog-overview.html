@@ -7,4 +7,5 @@
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">No Thanks</button>
   <button mat-button   [mat-dialog-close]="data[0]"  cdkFocusInitial (click)="updateData(data[0])">Ok</button>
+  <button class="mat-raised-button mat-warn" [mat-dialog-close]="data[0]"   mat-raised-button (click)="deleteDocument(data[0])" color="warn" >Delete</button>
 </div>

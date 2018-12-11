@@ -2,6 +2,7 @@ import { Component, OnInit,ViewChild ,Inject} from '@angular/core';
 import { DatabaseService } from '../database.service';
 import {MatTableDataSource} from  '@angular/material/table'
 import {MatPaginator,MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig} from  '@angular/material'
+import { DialogAddDocument } from '../dialog-add-document/dialog-add-document';
 
 
 
@@ -17,8 +18,11 @@ export class DatabaseDetailsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public rows:Array<any> = [];
   public columns:Array<any> = [];
-  public isSelected :boolean = false;
+  public isSelected :boolean 
+  public isPrimary :boolean = false;
+  public isSecondary = true;
   public data;
+  public newData;
   public name;
   public limit: number = 0 ;
   public skip : number = 0;
@@ -33,8 +37,10 @@ export class DatabaseDetailsComponent implements OnInit {
   onSelect(coll){
     this.isSelected=true;
     this.name = coll.name;
-    console.log(name);
+    this.isSecondary= true;
     //this.dbService.getCollectionDetails(name);
+    if(this.isPrimary){
+      this.isSecondary=false;
     this.dbService.getCollectionDetailsTwo(this.name,this.limit,this.skip).subscribe((e)=>{
 
       this.rows = (Object.keys(e[0]));
@@ -45,9 +51,16 @@ export class DatabaseDetailsComponent implements OnInit {
       this.data.paginator = this.paginator;
       this.skip =this.skip+this.limit;
     });
+  }else{
+    this.isPrimary =false;
+    this.dbService.getCollectionDetailsTwo(this.name,this.limit,this.skip).subscribe((e)=>{
+
+      this.newData = e;
+  });
     
     //this.dataSource = new MatTableDataSource(this.dbService.collectionDetails);
   }
+}
   // getNextDetails(){
   //   this.dbService.getCollectionDetailsTwo(this.name,this.limit,this.skip).subscribe((d)=>{
       
@@ -56,7 +69,21 @@ export class DatabaseDetailsComponent implements OnInit {
   //     this.data = d;
   //     this.skip =this.skip+this.limit;
   // });
-
+  
+  addDocument(){
+    const dialogRef = this.dialog.open(DialogAddDocument, {
+      width: '550px',
+      data: this.name,
+      });
+     
+      dialogRef.afterClosed().subscribe(result => {
+        var arg = {
+          'name':this.name
+        }
+        this.onSelect(arg);
+        
+      });
+  }
   itemSelected(item){
    // console.log(item);
     const dialogRef = this.dialog.open(DialogOverview, {
@@ -66,11 +93,29 @@ export class DatabaseDetailsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      // this.dbService.updateCollectionData(result).subscribe((da)=>
-      // {
-      //   console.log(da);
-      // });
+      var arg = {
+        'name':this.name
+      }
+      this.onSelect(arg)
     });
+  }
+  convertView(){
+    if(this.isPrimary){
+      this.isPrimary = false;
+      this.isSecondary=true;
+    }
+    else{
+      this.isPrimary=true;
+      this.isSecondary=false;
+      var arg = {
+        'name':this.name
+      }
+      this.onSelect(arg)
+    }
+
+  }
+  stringify(data){
+    return JSON.stringify(data);
   }
 }
 @Component({
@@ -100,6 +145,16 @@ export class DialogOverview implements OnInit {
   updateData(udpatedData){
     this.dbService.updateCollectionData(this.data[1],udpatedData).subscribe((data)=>{
 
+    },(err)=>{
+      console.log(err);
+    });
+  }
+  deleteDocument(data){
+    var id = data._id;
+    console.log(id);
+    this.dbService.deleteCollectionData(this.data[1],id).subscribe(()=>{
+    },(err)=>{
+      console.log(err)
     });
   }
 

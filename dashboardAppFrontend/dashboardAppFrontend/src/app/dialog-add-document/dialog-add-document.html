@@ -1,0 +1,13 @@
+<div mat-dialog-content>
+    <mat-form-field>
+      <textarea matInput [(ngModel)]="data" ></textarea>
+    </mat-form-field>
+    
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button   cdkFocusInitial (click)="addDocument(data)">Ok</button>
+  </div>
+  <div style="text-align:center">
+  <span *ngIf="jsonStatus">Check for you JSON Object, Make sure you have double quotes around both your fields.</span>
+  </div>

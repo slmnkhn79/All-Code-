@@ -135,13 +135,44 @@ router.put("/:collName/updateData",(req,res,next)=>{
     //console.log(data);
     updateDocument(collName,udpatedData)
     .then((newData)=>{
-      //console.log(data);
+     
       res.json(newData);
     })
     .catch((err)=>{
       console.log(err);
       res.send('Error');
     });
+});
+
+router.post('/:collName/addDocument',(req,res,next)=>{
+    var data = req.body;
+    console.log(req.body);
+    var collName = req.params.collName;
+  if ( Object.keys(data).length > 0) {
+    addDocument(data, collName)
+      .then((data) => {
+        res.send(data.ops);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.send(err);
+      });
+  } else
+        res.send('Empty JSON');
+
+  
+});
+
+router.delete('/:collName/:id',function(req,res,next){
+  var id = req.params.id;
+  var collName = req.params.collName;
+  deleteDocument(collName, id)
+  .then(()=>{
+      res.send('Deleted!');
+  })
+  .catch((err)=>{
+    res.send(err);
+  });
 });
 
 
@@ -235,4 +266,38 @@ function updateDocument(collectionName,data) {
   });
 }
 
+
+function addDocument(data, collName){
+  return new Promise((resolve,reject)=>{
+    mongoose.connection.db.collection(collName, function (error, coll) {
+       coll.insertOne(data , function (error, result) {
+         if (error || !result) {
+           console.log(error);
+           reject(error);
+         } else {
+           resolve(result);
+         }
+       });
+     });
+  });
+}
+
+function deleteDocument( collName ,did){
+  return new Promise((resolve, reject) => {
+    mongoose.connection.db.collection(collName, function (error, coll) {
+    console.log('---------');
+    var id = mongoose.mongo.ObjectId(did);
+    console.log(id);
+    //console.log(data);
+      coll.findOneAndDelete({_id:id} , function (error) {
+        if (error ) {
+          console.log(error);
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+  });
+}
 module.exports = router;

@@ -45,5 +45,11 @@ export class DatabaseService {
   updateCollectionData(collName,data){
     return this.httpClient.put(this.baseURL+'/'+collName+'/'+'updateData',data);
   }
+  addCollectionData(collName,data){
+    return this.httpClient.post(this.baseURL+'/'+collName+'/'+'addDocument' ,data);
+  }
+  deleteCollectionData(collName,id){
+    return this.httpClient.delete(this.baseURL+'/'+collName+'/'+id );
+  }
  
 }

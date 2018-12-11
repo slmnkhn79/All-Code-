@@ -13,6 +13,7 @@ import { Ng2TableModule } from 'ng2-table';
 import { PaginationModule } from 'ngx-bootstrap'; 
 import { TabsModule } from 'ngx-bootstrap';
 import {DialogOverview} from './database-details/database-details.component'
+import {DialogAddDocument} from './dialog-add-document/dialog-add-document'
 
 import { MatTableModule} from '@angular/material/table';
 
@@ -24,7 +25,8 @@ import { MatTableModule} from '@angular/material/table';
     LoginComponent,
     DatabaseDetailsComponent,
     DashboardComponent,
-    DialogOverview
+    DialogOverview,
+    DialogAddDocument
   ],
   imports: [
     BrowserModule,
@@ -42,7 +44,8 @@ import { MatTableModule} from '@angular/material/table';
   providers: [],
   bootstrap: [AppComponent],
   entryComponents: [
-    DialogOverview
+    DialogOverview,
+    DialogAddDocument
 ]
 })
 export class AppModule { }

@@ -1,0 +1,6 @@
+textarea{
+    min-height: 200px;
+    min-width: 500px;
+    border: 5px;
+    background-color: whitesmoke;
+}
