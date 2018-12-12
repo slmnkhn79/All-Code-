@@ -3,6 +3,7 @@ import { DatabaseService } from '../database.service';
 import {MatTableDataSource} from  '@angular/material/table'
 import {MatPaginator,MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig} from  '@angular/material'
 import { DialogAddDocument } from '../dialog-add-document/dialog-add-document';
+import { query } from '@angular/core/src/render3';
 
 
 
@@ -26,12 +27,18 @@ export class DatabaseDetailsComponent implements OnInit {
   public name;
   public limit: number = 0 ;
   public skip : number = 0;
+  prevAvailable : boolean= false;
+  nextAvailable : boolean= true;
+  queryMode : boolean = false;
+  query ='{}';
+
   constructor(private dbService :DatabaseService,public dialog: MatDialog) {
     
    }
 
   ngOnInit() {
     this.dbService.getCollectionList();
+    
   }
 
   onSelect(coll){
@@ -39,9 +46,12 @@ export class DatabaseDetailsComponent implements OnInit {
     this.name = coll.name;
     this.isSecondary= true;
     //this.dbService.getCollectionDetails(name);
-    if(this.isPrimary){
+    if(this.isPrimary){ 
+      if(!this.queryMode){
+        this.query = '{}';
+      }
       this.isSecondary=false;
-    this.dbService.getCollectionDetailsTwo(this.name,this.limit,this.skip).subscribe((e)=>{
+    this.dbService.getFilterCollectionDetails(this.name,0,0,this.query).subscribe((e)=>{
 
       this.rows = (Object.keys(e[0]));
       console.log(this.rows);
@@ -52,8 +62,16 @@ export class DatabaseDetailsComponent implements OnInit {
       this.skip =this.skip+this.limit;
     });
   }else{
+    if(!this.queryMode){
+      this.query='{}';
+    }
+    console.log(this.query);
     this.isPrimary =false;
-    this.dbService.getCollectionDetailsTwo(this.name,this.limit,this.skip).subscribe((e)=>{
+    this.limit = 10;
+    this.skip = 0;
+    this.nextAvailable = true;
+    this.prevAvailable = false;
+    this.dbService.getFilterCollectionDetails(this.name,this.limit,this.skip,'{"name":"test"}').subscribe((e)=>{
 
       this.newData = e;
   });
@@ -116,6 +134,46 @@ export class DatabaseDetailsComponent implements OnInit {
   }
   stringify(data){
     return JSON.stringify(data);
+  }
+  next(){
+    this.isPrimary =false;
+    this.skip =this.skip+this.limit;
+    this.limit = 10;
+    
+    this.dbService.getCollectionDetailsTwo(this.name,this.limit,this.skip).subscribe((e)=>{
+      this.prevAvailable = true;
+      this.newData = e; 
+      if(this.newData.length < 10 ){
+          this.nextAvailable = false;
+      }
+  });
+  }
+  previous(){
+    this.isPrimary =false;
+    this.skip =this.skip-this.limit;
+    this.limit = 10;
+    if(!this.queryMode)
+    {
+    this.query = '{}';
+    }
+    this.dbService.getFilterCollectionDetails(this.name,this.limit,this.skip,this.query).subscribe((e)=>{
+      this.nextAvailable = true;
+      this.newData = e; 
+      if(this.skip == 0){
+          this.prevAvailable = false;
+          
+      }
+  });
+  }
+  filterDocument(query1){
+    
+    this.queryMode = true;
+    this.query = query1;
+    console.log(this.query);
+    var arg = {
+      'name':this.name
+    }
+    this.onSelect(arg);
   }
 }
 @Component({

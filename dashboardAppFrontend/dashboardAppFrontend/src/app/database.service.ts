@@ -51,5 +51,8 @@ export class DatabaseService {
   deleteCollectionData(collName,id){
     return this.httpClient.delete(this.baseURL+'/'+collName+'/'+id );
   }
+  getFilterCollectionDetails(collName,limit,skip,query){
+    return this.httpClient.post(this.baseURL+'/list-data/'+collName+'/'+limit+'/'+skip, query);
+  }
  
 }

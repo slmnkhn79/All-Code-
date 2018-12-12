@@ -104,14 +104,9 @@ router.get('/list-data/:dbName/:limit/:skip', function (req, res, next) {
   var dbName = req.params.dbName;
   var limit = req.params.limit;
   var skip = req.params.skip;
-  // console.log('into colletions');
-  // connectionString= 'mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore';
-  //   console.log(connectionString);
-  //   connect(connectionString)
-  //   .then(
-  //     () => {  
-  
-  getCollectionDetails(dbName,limit,skip)
+  //var query = req.params.query;
+
+  getCollectionDetails(dbName,limit,skip,{})
     .then((data) => {
        // console.log(data);
         res.status(200).json(data);
@@ -121,11 +116,26 @@ router.get('/list-data/:dbName/:limit/:skip', function (req, res, next) {
       res.send('err');
     });
 
-  // })
-  // .catch((err)=>
-  // {
-  //   res.send(err);
-  // });
+ 
+
+});
+router.post('/list-data/:dbName/:limit/:skip', function (req, res, next) {
+  var dbName = req.params.dbName;
+  var limit = req.params.limit;
+  var skip = req.params.skip;
+  var query = req.body;
+  console.log(query);
+  getCollectionDetails(dbName,limit,skip,JSON.parse(JSON.stringify(query)))
+    .then((data) => {
+       // console.log(data);
+        res.status(200).json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send('err');
+    });
+
+ 
 
 });
 
@@ -205,10 +215,11 @@ function listCollections(){
      });
   }
 
-function getCollectionDetails(collectionName,l,s) {
+function getCollectionDetails(collectionName,l,s,q) {
+console.log(q);
   return new Promise((resolve, reject) => {
     mongoose.connection.db.collection(collectionName, function (error, coll) {
-      coll.find({}).skip(Number(s)).limit(Number(l)).toArray(function (error, document) {
+      coll.find(q).skip(Number(s)).limit(Number(l)).toArray(function (error, document) {
         if (error || !document) {
           console.log(error);
           reject(error);
