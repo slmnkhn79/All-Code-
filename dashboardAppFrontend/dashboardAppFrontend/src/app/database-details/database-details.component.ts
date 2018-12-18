@@ -3,7 +3,10 @@ import { DatabaseService } from '../database.service';
 import {MatTableDataSource} from  '@angular/material/table'
 import {MatPaginator,MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig} from  '@angular/material'
 import { DialogAddDocument } from '../dialog-add-document/dialog-add-document';
-import { query } from '@angular/core/src/render3';
+import {MatSnackBar} from '@angular/material'
+import * as $ from 'jquery';
+import { LoginComponent } from '../login/login.component';
+
 
 
 
@@ -17,7 +20,7 @@ import { query } from '@angular/core/src/render3';
 export class DatabaseDetailsComponent implements OnInit {
   //dataSource: MatTableDataSource<[]>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  public rows:Array<any> = [];
+  public rows ;
   public columns:Array<any> = [];
   public isSelected :boolean 
   public isPrimary :boolean = false;
@@ -31,14 +34,15 @@ export class DatabaseDetailsComponent implements OnInit {
   nextAvailable : boolean= true;
   queryMode : boolean = false;
   query ='{}';
+  public isEmpty :boolean = false;
 
-  constructor(private dbService :DatabaseService,public dialog: MatDialog) {
+  constructor(private dbService :DatabaseService,public dialog: MatDialog,public snackbar: MatSnackBar) {
     
    }
 
   ngOnInit() {
     this.dbService.getCollectionList();
-    
+    this.queryMode =false;
   }
 
   onSelect(coll){
@@ -50,30 +54,54 @@ export class DatabaseDetailsComponent implements OnInit {
       if(!this.queryMode){
         this.query = '{}';
       }
+      console.log("Query is " + this.query);
       this.isSecondary=false;
-    this.dbService.getFilterCollectionDetails(this.name,0,0,this.query).subscribe((e)=>{
+      this.dbService.getSchemaInfo(this.name)
+      .then((data)=>{
+        console.log(data);
+        //this.rows = data;
+        this.dbService.getFilterCollectionDetails(this.name,0,0,this.query).subscribe((e)=>{
 
-      this.rows = (Object.keys(e[0]));
-      console.log(this.rows);
-     // console.log(e);
-      this.data = e;
-      this.data = new MatTableDataSource(this.data);
-      this.data.paginator = this.paginator;
-      this.skip =this.skip+this.limit;
-    });
+          this.rows = (Object.keys(e[0]));
+          //console.log(this.rows);
+         // console.log(e);
+          this.data = e;
+          this.data = new MatTableDataSource(this.data);
+          this.data.paginator = this.paginator;
+          this.skip =this.skip+this.limit;
+        });
+      })
+      .catch((err)=>{
+
+      });
+    
   }else{
     if(!this.queryMode){
       this.query='{}';
     }
-    console.log(this.query);
+    console.log("v2 - Query is " + this.query);
     this.isPrimary =false;
     this.limit = 10;
     this.skip = 0;
     this.nextAvailable = true;
     this.prevAvailable = false;
-    this.dbService.getFilterCollectionDetails(this.name,this.limit,this.skip,'{"name":"test"}').subscribe((e)=>{
-
+    this.dbService.getFilterCollectionDetails(this.name,this.limit,this.skip,this.query).subscribe((e)=>{
+      
       this.newData = e;
+      if(this.newData.length == 0){
+      this.isEmpty = true;
+      this.nextAvailable =false;
+      this.snackbar.open('No Data Found','',{
+        duration: 2000
+      })
+      }
+      if(this.newData.length <10)
+      {
+        this.nextAvailable =false;
+      }
+      
+  },(error)=>{
+    console.log(error);
   });
     
     //this.dataSource = new MatTableDataSource(this.dbService.collectionDetails);
@@ -118,6 +146,8 @@ export class DatabaseDetailsComponent implements OnInit {
     });
   }
   convertView(){
+    this.limit = 10;
+    this.skip = 0;
     if(this.isPrimary){
       this.isPrimary = false;
       this.isSecondary=true;
@@ -140,13 +170,24 @@ export class DatabaseDetailsComponent implements OnInit {
     this.skip =this.skip+this.limit;
     this.limit = 10;
     
-    this.dbService.getCollectionDetailsTwo(this.name,this.limit,this.skip).subscribe((e)=>{
-      this.prevAvailable = true;
-      this.newData = e; 
-      if(this.newData.length < 10 ){
-          this.nextAvailable = false;
-      }
-  });
+  //   this.dbService.getCollectionDetailsTwo(this.name,this.limit,this.skip).subscribe((e)=>{
+  //     this.prevAvailable = true;
+  //     this.newData = e; 
+  //     if(this.newData.length < 10 ){
+  //         this.nextAvailable = false;
+  //     }
+  // });
+
+      this.dbService.getFilterCollectionDetails(this.name,this.limit,this.skip,this.query).subscribe((e)=>{
+
+        this.prevAvailable = true;
+        this.newData = e; 
+        if(this.newData.length < 10 ){
+            this.nextAvailable = false;
+        }
+    },(error)=>{
+      console.log(error);
+    });
   }
   previous(){
     this.isPrimary =false;
@@ -156,25 +197,71 @@ export class DatabaseDetailsComponent implements OnInit {
     {
     this.query = '{}';
     }
-    this.dbService.getFilterCollectionDetails(this.name,this.limit,this.skip,this.query).subscribe((e)=>{
+  //   this.dbService.getFilterCollectionDetails(this.name,this.limit,this.skip,this.query).subscribe((e)=>{
+  //     this.nextAvailable = true;
+  //     this.newData = e; 
+  //     if(this.skip == 0){
+  //         this.prevAvailable = false;
+          
+  //     }
+  // });
+    this.dbService.getFilterCollectionDetails(this.name, this.limit, this.skip, this.query).subscribe((e) => {
+
       this.nextAvailable = true;
       this.newData = e; 
       if(this.skip == 0){
           this.prevAvailable = false;
           
       }
-  });
+    }, (error) => {
+      console.log(error);
+    });
   }
   filterDocument(query1){
-    
+    this.limit = 10;
+    this.skip = 0;
     this.queryMode = true;
     this.query = query1;
-    console.log(this.query);
-    var arg = {
-      'name':this.name
+    if(this.query.length == 0){
+      this.queryMode = false;
+      this.query = '{}'
     }
-    this.onSelect(arg);
+    if(this.validateJSON(query1))
+    {
+      var arg = {
+        'name':this.name
+      }
+      this.onSelect(arg);
+    }else{
+      this.snackbar.open('Check your JSON Syntax', '', {
+        duration: 2000
+      });
+      
+    }
+   // console.log(this.query);
+    
   }
+  validateJSON(obj){
+    try{
+        var c = $.parseJSON(obj);
+        console.log('parse');
+        return true;
+    }catch(e){
+        
+       return false;
+    }
+}
+resetFilter(){
+  this.queryMode = false;
+  var arg = {
+    'name':this.name
+  }
+  this.onSelect(arg);
+}
+logout(){
+  
+  window.location.reload();
+}
 }
 @Component({
   selector: 'dialog-overview',
@@ -215,5 +302,6 @@ export class DialogOverview implements OnInit {
       console.log(err)
     });
   }
-
+  
 }
+

@@ -9,36 +9,36 @@ var connection ;
 //   res.render('index', { title: 'Express' });
 // });
 
-router.get('/connect', function(req,res,next){
+router.post('/connect', function(req,res,next){
+  console.log(req.body);
+  if(!req.body) {
+    return res.json(
+      {
+        'error' : 'No data was sent!',
+        'code' : '200'
+      });
+  }
+  if(!req.body.username || !req.body.password || !req.body.portNumber || !req.body.serverName){
+    return res.json({
+      'error' : 'Data Incomplete',
+      'code' : '201'
+    });
+  }
+  if(req.body.username.length < 6 || req.body.password.length < 6){
+    return res.json({
+      'error' : 'Less than 6 characters ',
+      'code' : '202'
+    });
+  }
+    var username = req.body.username;
+    var password = req.body.password; 
+    var port = req.body.portNumber;
+    var serverName = req.body.serverName;
+    var dbName = req.body.dbName;
 
-  // if(!req.body) {
-  //   return res.json(
-  //     {
-  //       'error' : 'No data was sent!',
-  //       'code' : '200'
-  //     });
-  // }
-  // if(!req.body.username || !req.body.password || !req.body.port || !req.body.serverName){
-  //   return res.json({
-  //     'error' : 'Data Incomplete',
-  //     'code' : '201'
-  //   });
-  // }
-  // if(req.body.username.length < 6 || req.body.password.length < 6){
-  //   return res.json({
-  //     'error' : 'Less than 6 characters ',
-  //     'code' : '202'
-  //   });
-  // }
-  //   var username = req.body.username;
-  //   var password = req.body.password; 
-  //   var port = req.body.port;
-  //   var serverName = req.body.serverName;
-  //   var dbName = req.body.dbName;
-
-  //   connectionString = 'mongodb://'+username+':'+password+'@'+serverName+':'+port+'/'+dbName;
-    connectionString= 'mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore';
-    //console.log(connectionString);
+    connectionString = 'mongodb://'+username+':'+password+'@'+serverName+':'+port+'/'+dbName;
+    //connectionString= 'mongodb://slmnkhn79:.cleanup7275@ds119164.mlab.com:19164/ngbookstore';
+    console.log(connectionString);
     connect(connectionString)
     .then(
       () => {   
@@ -125,7 +125,7 @@ router.post('/list-data/:dbName/:limit/:skip', function (req, res, next) {
   var skip = req.params.skip;
   var query = req.body;
   console.log(query);
-  getCollectionDetails(dbName,limit,skip,JSON.parse(JSON.stringify(query)))
+  getCollectionDetails(dbName,limit,skip,query)
     .then((data) => {
        // console.log(data);
         res.status(200).json(data);
@@ -145,7 +145,6 @@ router.put("/:collName/updateData",(req,res,next)=>{
     //console.log(data);
     updateDocument(collName,udpatedData)
     .then((newData)=>{
-     
       res.json(newData);
     })
     .catch((err)=>{
@@ -184,8 +183,54 @@ router.delete('/:collName/:id',function(req,res,next){
     res.send(err);
   });
 });
+router.get('/getSchema/:collName', (req, res, next) => {
+  var collName = req.params.collName;
+  getCollectionDetails(collName, 0, 0, {})
+    .then((data) => {
+      // console.log(data);
+      var biggestJson = {};
+      //  var sendResponse =  _.after(data.length , function(){
+      //res.send("Length"+data.length);
+      // });
+      var counter = 0;
+      var keys = [];
+      _.each(data, function (d) {
+        //var d1 =d;
+        //console.log(d1);
+        // if(d1.length > biggestJson.length)
+        // console.log(d1.length);
+        //       {
+        //         biggestJson = d1;
+        //       }
+        //       if(counter++ == data.length){
+        //         res.status(200).json(biggestJson)
+        //       }
+        // sendResponse;
+        if (counter++ == 1) {
+          keys = Object.keys(d);
+        }
+       // console.log(keys);
+        var tempKeys = Object.keys(d);
+        tempKeys.forEach(element => {
+          if (!keys.includes(element)) {
+            keys.push(element);
+          }
+        });
+        if (counter == data.length) {
+          res.status(200).json(keys)
+        }
+      });
+      //res.send(keys);
 
-
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send('err');
+    });
+});
+router.get('/disconnect',(req,res,next)=>{
+mongoose.connection.close();
+});
 function connect(connectionString){
   return new Promise((resolve, reject)=>
   {
@@ -216,7 +261,7 @@ function listCollections(){
   }
 
 function getCollectionDetails(collectionName,l,s,q) {
-console.log(q);
+//console.log(q);
   return new Promise((resolve, reject) => {
     mongoose.connection.db.collection(collectionName, function (error, coll) {
       coll.find(q).skip(Number(s)).limit(Number(l)).toArray(function (error, document) {

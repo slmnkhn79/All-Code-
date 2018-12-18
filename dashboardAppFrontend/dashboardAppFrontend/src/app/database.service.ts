@@ -23,8 +23,8 @@ export class DatabaseService {
     private httpClient: HttpClient
   ) { }
 
-  connect() {
-    return this.httpClient.get<Status>(this.connectUrl);
+  connect(data) {
+    return this.httpClient.post<Status>(this.connectUrl,data);
   }
   getCollectionList(){
     this.httpClient.get<[]>(this.collectionUrl).subscribe((data)=>{
@@ -52,7 +52,11 @@ export class DatabaseService {
     return this.httpClient.delete(this.baseURL+'/'+collName+'/'+id );
   }
   getFilterCollectionDetails(collName,limit,skip,query){
-    return this.httpClient.post(this.baseURL+'/list-data/'+collName+'/'+limit+'/'+skip, query);
+    console.log("Qeury from service is "+JSON.parse(query));
+    return this.httpClient.post(this.baseURL+'/list-data/'+collName+'/'+limit+'/'+skip, JSON.parse(query));
+  }
+  getSchemaInfo(collName){
+    return this.httpClient.get(this.baseURL+'/getSchema/'+collName).toPromise();
   }
  
 }

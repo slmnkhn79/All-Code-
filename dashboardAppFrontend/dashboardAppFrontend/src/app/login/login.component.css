@@ -1,0 +1,19 @@
+.details_card{
+    margin-left: 20px;
+    width: 20%;
+}
+.inline_details{
+    margin-left: 20px;
+    width: 50%;
+}
+mat-card{
+    width: 20%
+}
+.recents{
+    padding: 10px;
+    cursor: pointer;
+    color: black;
+    background-color: aquamarine;
+    width:100%;
+    text-align: right;
+}

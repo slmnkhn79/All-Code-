@@ -1,39 +1,37 @@
-<div *ngIf="!connected" style="text-align:center">
-  <h1>
-    Welcome!
-  </h1>
-</div>
 <mat-card *ngIf="!connected" class="details_card">
-
   <mat-card-title >Enter Database Details!</mat-card-title>
   <mat-card-content class="inline_details">
-     
+    <form [formGroup]="loginForm"  (ngSubmit)="onClick()"> 
         <mat-form-field>
-          <input matInput placeholder="Username" >
+          <input matInput placeholder="Username" formControlName="username" >
         </mat-form-field>
         <br>
        
         <mat-form-field>
-          <input type="password" matInput placeholder="Password" />
+          <input type="password" matInput placeholder="Password" formControlName="password"/>
         </mat-form-field>
       
         <br>
         <mat-form-field>
-          <input matInput placeholder="Server Name" />
+          <input matInput placeholder="Server Name" formControlName="serverName" />
         </mat-form-field>
      
         <br>
         <mat-form-field>
-          <input matInput placeholder="Port Number" />
+          <input matInput placeholder="Port Number" formControlName="portNumber" />
         </mat-form-field>
         <br>
         <mat-form-field>
-          <input matInput placeholder="Database Name" />
+          <input matInput placeholder="Database Name" formControlName="dbName"/>
         </mat-form-field>
         <br>
-        <button mat-raised-button color="primary" (click)="onClick()">Connect!</button>
-  
+        <button mat-raised-button color="primary" type="submit">Connect!</button>
+      </form>
   </mat-card-content>
+  <div *ngIf="recents" class="recents">
+    <p>Recent:</p>
+    <p (click)="recentLogin()">{{item.serverName}}</p>
+  </div>
 </mat-card>
 
 <app-database-details *ngIf="connected"></app-database-details>
