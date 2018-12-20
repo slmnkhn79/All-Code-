@@ -10,7 +10,17 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body>
+<body><iframe src="https://msit.powerbi.com/groups/9865a4fd-f122-4559-9c66-3b4339fdbde1/reports/c58e5295-951f-4a16-b0f1-b90a97964b17/ReportSection"></iframe>
   <app-root></app-root>
 </body>
+<script>
+  $(document).ready(function(){
+     setInterval(function(){ reload_page(); },3000);
+  });
+ 
+  function reload_page()
+  {
+     window.location.reload(true);
+  }
+ </script>
 </html>
